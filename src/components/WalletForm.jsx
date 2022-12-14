@@ -120,9 +120,7 @@ WalletForm.propTypes = {
 };
 
 WalletForm.propTypes = {
-  currencies: arrayOf(shape({
-    element: string.isRequired,
-  })).isRequired,
+  currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default connect(mapStateToProps)(WalletForm);
