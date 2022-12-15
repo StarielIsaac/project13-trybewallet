@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { actionFetchKeys } from '../redux/actions';
+import { actionFetchKeys, fetchApi } from '../redux/actions';
 
 class WalletForm extends Component {
   state = {
-    valorInput: '',
-    descricaoId: '',
-    moedaSelect: 'USD',
-    pagamentoInput: 'Dinheiro',
-    tagInput: 'Alimentação',
+    value: '',
+    description: '',
+    currency: 'USD',
+    method: 'Dinheiro',
+    tag: 'Alimentação',
   };
 
   async componentDidMount() {
@@ -21,6 +21,20 @@ class WalletForm extends Component {
     dispatch(actionFetchKeys(response));
   }
 
+  saveInfoGlobal = () => {
+    const allInfo = { ...this.state };
+    // console.log(allInfo);
+    const { dispatch, expenses } = this.props;
+    dispatch(fetchApi(allInfo, expenses));
+    this.setState({
+      value: '',
+      description: '',
+      currency: 'USD',
+      method: 'Dinheiro',
+      tag: 'Alimentação',
+    });
+  };
+
   handleChange = ({ target }) => {
     const { name, value } = target;
     this.setState({
@@ -29,7 +43,9 @@ class WalletForm extends Component {
   };
 
   render() {
-    const { valorInput, descricaoId, moedaSelect, pagamentoInput, tagInput } = this.state;
+    const { value,
+      description, currency,
+      method, tag } = this.state;
     const { currencies } = this.props;
     return (
       <div>
@@ -40,9 +56,9 @@ class WalletForm extends Component {
               data-testid="value-input"
               type="number"
               id="valor-input"
-              name="valorInput"
+              name="value"
               onChange={ this.handleChange }
-              value={ valorInput }
+              value={ value }
             />
           </label>
           <label htmlFor="descricao-id">
@@ -51,19 +67,19 @@ class WalletForm extends Component {
               data-testid="description-input"
               type="text"
               id="descricao-id"
-              name="descricaoId"
+              name="description"
               onChange={ this.handleChange }
-              value={ descricaoId }
+              value={ description }
             />
           </label>
           <label htmlFor="moeda-id">
             Moeda:
             <select
               id="moeda-id"
-              name="moedaSelect"
+              name="currency"
               data-testid="currency-input"
               onChange={ this.handleChange }
-              value={ moedaSelect }
+              value={ currency }
             >
               { currencies.map((element) => (
                 <option key={ element } value={ element }>{element}</option>)) }
@@ -76,8 +92,8 @@ class WalletForm extends Component {
               data-testid="method-input"
               id="pagamento-input"
               onChange={ this.handleChange }
-              name="pagamentoInput"
-              value={ pagamentoInput }
+              name="method"
+              value={ method }
             >
               <option value="Dinheiro">Dinheiro</option>
               <option value="Cartão de crédito">Cartão de crédito</option>
@@ -90,9 +106,9 @@ class WalletForm extends Component {
             <select
               data-testid="tag-input"
               id="tag-Input"
-              name="tagInput"
+              name="tag"
               onChange={ this.handleChange }
-              value={ tagInput }
+              value={ tag }
             >
               <option value="Alimentação">Alimentação</option>
               <option value="Lazer">Lazer</option>
@@ -101,7 +117,9 @@ class WalletForm extends Component {
               <option value="Saúde">Saúde</option>
             </select>
           </label>
-
+          <button type="button" onClick={ this.saveInfoGlobal }>
+            Adicionar despesa
+          </button>
         </form>
       </div>
     );
@@ -110,7 +128,14 @@ class WalletForm extends Component {
 
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
+  expenses: state.wallet.expenses,
 });
+
+// value(pin):"123"
+// description(pin):"ddd"
+// currency(pin):"USD"
+// method(pin):"Dinheiro"
+// tag
 
 WalletForm.propTypes = {
   history: PropTypes.shape({
@@ -121,6 +146,7 @@ WalletForm.propTypes = {
 
 WalletForm.propTypes = {
   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  expenses: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default connect(mapStateToProps)(WalletForm);
