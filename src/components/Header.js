@@ -28,18 +28,9 @@ const mapStateToProps = (globalState) => ({
   expenses: globalState.wallet.expenses,
 });
 
-// Header.propTypes = {
-//   user: PropTypes.string.isRequired,
-// };
-
 export default connect(mapStateToProps)(Header);
 
 Header.propTypes = {
   user: PropTypes.string.isRequired,
   expenses: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
-
-// WalletForm.propTypes = {
-//   currencies: PropTypes.arrayOf(PropTypes.string).isRequired,
-//   expenses: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-// };
